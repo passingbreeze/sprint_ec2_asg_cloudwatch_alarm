@@ -114,7 +114,7 @@ data "aws_iam_policy_document" "lambda_exec" {
 
 
 resource "random_pet" "cloudwatch_sprint_scale_alarm" {
-  prefix = "cloudwatch-sprint-scale-alarm-"
+  prefix = "cloudwatch-sprint-scale-alarm"
   length = 4
 }
 
@@ -127,8 +127,8 @@ resource "aws_s3_bucket" "cloudwatch_sprint_scale_alarm_bucket" {
 data "archive_file" "cloudwatch_sprint_scale_alarm_webhook_file" {
   type = "zip"
 
-  source_dir  = "${path.module}/bin/handler"
-  output_path = "${path.module}/bin/handler.zip"
+  source_file  = "${path.module}/bin/handler"
+  output_path = "${path.module}/handler.zip"
 }
 
 resource "aws_s3_object" "cloudwatch_sprint_scale_alarm_object" {
@@ -147,7 +147,7 @@ resource "aws_lambda_function" "cloudwatch_sprint_scale_alarm_webhook_function" 
   s3_key    = aws_s3_object.cloudwatch_sprint_scale_alarm_object.key
 
   runtime = "go1.x"
-  handler = "handler.handler"
+  handler = "handler"
 
   source_code_hash = data.archive_file.cloudwatch_sprint_scale_alarm_webhook_file.output_base64sha256
 
